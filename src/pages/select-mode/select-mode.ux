@@ -1,0 +1,136 @@
+<template>
+  <div class="container">
+    <div class="title">
+      <text class="title-text">猜数游戏</text>
+    </div>
+    <div class="mode-list">
+      <div class="mode-item" onclick="selectMode('easy')">
+        <text class="mode-name">简单模式</text>
+        <text class="mode-desc">0~50</text>
+        <text class="mode-chances">30次机会</text>
+      </div>
+      <div class="mode-item" onclick="selectMode('normal')">
+        <text class="mode-name">普通模式</text>
+        <text class="mode-desc">0~50</text>
+        <text class="mode-chances">20次机会</text>
+      </div>
+      <div class="mode-item" onclick="selectMode('hard')">
+        <text class="mode-name">困难模式</text>
+        <text class="mode-desc">0~100</text>
+        <text class="mode-chances">10次机会</text>
+      </div>
+      <div class="mode-item" onclick="selectMode('hell')">
+        <text class="mode-name">地狱模式</text>
+        <text class="mode-desc">0~250</text>
+        <text class="mode-chances">10次机会</text>
+      </div>
+    </div>
+    <div class="about-btn" onclick="goToAbout">
+      <text class="about-text">关于</text>
+    </div>
+  </div>
+</template>
+
+<script>
+  import router from '@system.router'
+
+  export default {
+    private: {
+      gameModes: {
+        easy: { min: 0, max: 50, chances: 30 },
+        normal: { min: 0, max: 50, chances: 20 },
+        hard: { min: 0, max: 100, chances: 10 },
+        hell: { min: 0, max: 250, chances: 10 }
+      }
+    },
+    selectMode(mode) {
+      const modeConfig = this.gameModes[mode]
+      router.push({
+        uri: 'pages/game',
+        params: {
+          mode: mode,
+          min: modeConfig.min,
+          max: modeConfig.max,
+          chances: modeConfig.chances
+        }
+      })
+    },
+    goToAbout() {
+      router.push({
+        uri: 'pages/about'
+      })
+    }
+  }
+</script>
+
+<style>
+  .container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #e3f2fd;
+    padding: 20px;
+  }
+
+  .title {
+    margin-bottom: 25px;
+  }
+
+  .title-text {
+    font-size: 26px;
+    font-weight: bold;
+    color: #000000;
+  }
+
+  .mode-list {
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+  }
+
+  .mode-item {
+    width: 100%;
+    height: 65px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mode-name {
+    font-size: 16px;
+    color: #000000;
+    font-weight: bold;
+  }
+
+  .mode-desc {
+    font-size: 13px;
+    color: #a5d6a7;
+    margin-top: 2px;
+  }
+
+  .mode-chances {
+    font-size: 12px;
+    color: #000000;
+    margin-top: 2px;
+  }
+
+  .about-btn {
+    width: 110px;
+    height: 38px;
+    background-color: #a5d6a7;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .about-text {
+    font-size: 15px;
+    color: #000000;
+  }
+</style>

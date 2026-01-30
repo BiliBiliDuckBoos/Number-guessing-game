@@ -1,0 +1,244 @@
+<template>
+  <div class="container">
+    <div class="info-section">
+      <div class="info-row">
+        <text class="info-label">范围:</text>
+        <text class="info-value">{{ min }}~{{ max }}</text>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row">
+        <text class="info-label">剩余:</text>
+        <text class="info-value">{{ chances }}次</text>
+      </div>
+    </div>
+
+    <div class="display-section">
+      <text class="display-text">{{ input }}</text>
+    </div>
+
+    <div class="message-section">
+      <text class="message-text">{{ message }}</text>
+    </div>
+
+    <div class="keypad">
+      <div class="keypad-row">
+        <div class="key" onclick="pressKey('7')"><text class="key-text">7</text></div>
+        <div class="key" onclick="pressKey('8')"><text class="key-text">8</text></div>
+        <div class="key" onclick="pressKey('9')"><text class="key-text">9</text></div>
+      </div>
+      <div class="keypad-row">
+        <div class="key" onclick="pressKey('4')"><text class="key-text">4</text></div>
+        <div class="key" onclick="pressKey('5')"><text class="key-text">5</text></div>
+        <div class="key" onclick="pressKey('6')"><text class="key-text">6</text></div>
+      </div>
+      <div class="keypad-row">
+        <div class="key" onclick="pressKey('1')"><text class="key-text">1</text></div>
+        <div class="key" onclick="pressKey('2')"><text class="key-text">2</text></div>
+        <div class="key" onclick="pressKey('3')"><text class="key-text">3</text></div>
+      </div>
+      <div class="keypad-row">
+        <div class="key clear-key" onclick="clearInput"><text class="key-text">C</text></div>
+        <div class="key" onclick="pressKey('0')"><text class="key-text">0</text></div>
+        <div class="key submit-key" onclick="checkGuess"><text class="key-text">确定</text></div>
+      </div>
+    </div>
+
+    <div class="back-btn" onclick="goBack">
+      <text class="back-text">返回</text>
+    </div>
+  </div>
+</template>
+
+<script>
+  import router from '@system.router'
+
+  export default {
+    private: {
+      min: 0,
+      max: 50,
+      chances: 30,
+      input: '',
+      message: '请输入数字',
+      targetNumber: 0,
+      gameOver: false
+    },
+    onInit() {
+      this.min = Number(this.min)
+      this.max = Number(this.max)
+      this.chances = Number(this.chances)
+      this.targetNumber = Math.floor(Math.random() * (this.max + 1))
+      this.gameOver = false
+      this.input = ''
+      this.message = '请输入数字'
+    },
+    pressKey(key) {
+      if (this.gameOver) return
+      if (this.input.length < 4) {
+        this.input = this.input + key
+      }
+    },
+    clearInput() {
+      if (this.gameOver) return
+      this.input = ''
+    },
+    checkGuess() {
+      if (this.gameOver) return
+      if (this.input === '') {
+        this.message = '请输入数字'
+        return
+      }
+
+      const guess = Number(this.input)
+
+      if (guess < this.min || guess > this.max) {
+        this.message = `请输入${this.min}~${this.max}之间的数字`
+        this.input = ''
+        return
+      }
+
+      if (guess === this.targetNumber) {
+        this.message = '恭喜你猜对了！'
+        this.gameOver = true
+      } else if (guess < this.targetNumber) {
+        this.chances = this.chances - 1
+        if (this.chances <= 0) {
+          this.message = `游戏结束！正确答案是${this.targetNumber}`
+          this.gameOver = true
+        } else {
+          this.message = '小了'
+          this.input = ''
+        }
+      } else {
+        this.chances = this.chances - 1
+        if (this.chances <= 0) {
+          this.message = `游戏结束！正确答案是${this.targetNumber}`
+          this.gameOver = true
+        } else {
+          this.message = '大了'
+          this.input = ''
+        }
+      }
+    },
+    goBack() {
+      router.back()
+    }
+  }
+</script>
+
+<style>
+  .container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    background-color: #e3f2fd;
+    padding-top: 15px;
+  }
+
+  .info-section {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+    margin-bottom: 12px;
+  }
+
+  .info-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .info-label {
+    font-size: 13px;
+    color: #000000;
+    margin-right: 5px;
+  }
+
+  .info-value {
+    font-size: 15px;
+    color: #a5d6a7;
+    font-weight: bold;
+  }
+
+  .display-section {
+    width: 85%;
+    height: 45px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .display-text {
+    font-size: 26px;
+    color: #000000;
+    font-weight: bold;
+  }
+
+  .message-section {
+    width: 90%;
+    height: 35px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .message-text {
+    font-size: 14px;
+    color: #000000;
+    text-align: center;
+  }
+
+  .keypad {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .keypad-row {
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .key {
+    width: 52px;
+    height: 42px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    margin-right: 6px;
+  }
+
+  .key-text {
+    font-size: 19px;
+    color: #000000;
+    font-weight: bold;
+  }
+
+  .clear-key {
+    background-color: #a5d6a7;
+  }
+
+  .submit-key {
+    background-color: #a5d6a7;
+  }
+
+  .back-btn {
+    width: 100px;
+    height: 36px;
+    background-color: #a5d6a7;
+    border-radius: 18px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .back-text {
+    font-size: 15px;
+    color: #000000;
+  }
+</style>
